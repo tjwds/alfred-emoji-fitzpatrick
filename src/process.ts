@@ -31,12 +31,12 @@ const processFile = (filePath: string): Promise<string> =>
         console.log(filePath, "bailed");
         return reject(err);
       }
-      if (!emoji) {
-        return reject("emoji is undefined");
-      }
-      const alf = emoji.alfredsnippet;
       fitzpatrickModifiers.forEach((modifier) => {
-        if (humanEmoji.includes(alf.snippet)) {
+        if (!emoji) {
+          return reject("emoji is undefined");
+        }
+        const alf = { ...emoji.alfredsnippet };
+        if (humanEmoji.includes(emoji.alfredsnippet.snippet)) {
           const newEmoji = alf.snippet + modifier[0];
           alf.name = alf.name.replace(alf.snippet, newEmoji);
           alf.snippet = newEmoji;
@@ -45,10 +45,16 @@ const processFile = (filePath: string): Promise<string> =>
         const newFilePath = `${modifier[1]}/${alf.name.replace(/[:/]/g, "")} [${
           alf.uid
         }].json`;
-        writeFileSync(join(DIST_LOCATION, newFilePath), JSON.stringify(emoji), {
-          encoding: "utf-8",
-        });
-        return resolve(emoji!.alfredsnippet.snippet);
+        writeFileSync(
+          join(DIST_LOCATION, newFilePath),
+          JSON.stringify({
+            alfredsnippet: alf,
+          }),
+          {
+            encoding: "utf-8",
+          }
+        );
+        return resolve(emoji.alfredsnippet.snippet);
       });
     });
   });
