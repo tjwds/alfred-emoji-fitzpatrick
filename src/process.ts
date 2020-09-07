@@ -1,4 +1,4 @@
-import { readdirSync, readFile, writeFile } from "fs";
+import { readdirSync, readFile, writeFileSync } from "fs";
 import { join } from "path";
 import { fitzpatrickModifiers, humanEmoji } from "./human-emoji";
 import { v4 as uuidv4 } from "uuid";
@@ -42,22 +42,22 @@ const processFile = (filePath: string): Promise<string> =>
           alf.snippet = newEmoji;
         }
         alf.uid = uuidv4();
-        const newFilePath = `${modifier[1]}/${alf.name.replace(/:/g, "")} [${
+        const newFilePath = `${modifier[1]}/${alf.name.replace(/[:/]/g, "")} [${
           alf.uid
         }].json`;
-        writeFile(
-          join(DIST_LOCATION, newFilePath),
-          JSON.stringify(emoji),
-          { encoding: "utf-8" },
-          () => resolve(emoji!.alfredsnippet.snippet)
-        );
+        writeFileSync(join(DIST_LOCATION, newFilePath), JSON.stringify(emoji), {
+          encoding: "utf-8",
+        });
+        return resolve(emoji!.alfredsnippet.snippet);
       });
     });
   });
 
 const files = readdirSync(JSON_FILE_LOCATION);
-Promise.all(files.map((file) => processFile(join(JSON_FILE_LOCATION, file))))
-.then(() => {
-  console.log("👍🏿👍🏾👍🏽👍🏼👍🏻");
-})
-.catch((e) => console.log("whoopsie!", e));
+Promise.allSettled(
+  files.map((file) => processFile(join(JSON_FILE_LOCATION, file)))
+)
+  .then(() => {
+    console.log("👍🏿👍🏾👍🏽👍🏼👍🏻");
+  })
+  .catch((e) => console.log("whoopsie!", e));
