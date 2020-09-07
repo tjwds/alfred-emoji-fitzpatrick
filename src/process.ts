@@ -4,7 +4,7 @@ import { fitzpatrickModifiers, humanEmoji } from "./human-emoji";
 import { v4 as uuidv4 } from "uuid";
 
 const JSON_FILE_LOCATION = join(__dirname, "../vendor/json");
-const DIST_LOCATION = join(__dirname, "../dist");
+const DIST_LOCATION = join(__dirname, "../build");
 
 type Emoji = {
   alfredsnippet: {

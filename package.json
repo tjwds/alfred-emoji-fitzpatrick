@@ -5,7 +5,7 @@
   "main": "./src/process.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "ts-node ./src/process.ts"
+    "build": "rm -r build || true && mkdir build && cd build && mkdir dark light medium medium-dark medium-light && cd .. && ts-node ./src/process.ts"
   },
   "author": {
     "name": "Joe Woods"
